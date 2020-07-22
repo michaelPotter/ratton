@@ -1,0 +1,68 @@
+total 332K
+drwx------ 26 mpotter mpotter 4.0K Jul 15 21:35 .
+drwxr-xr-x  5 root    root    4.0K Jun  7 10:25 ..
+lrwxrwxrwx  1 mpotter mpotter   37 Jul 13 21:39 .bash_aliases -> /home/mpotter/.dotfiles/.bash_aliases
+-rw-------  1 mpotter mpotter 2.6K Jul 13 22:45 .bash_history
+-rw-r--r--  1 mpotter mpotter   21 May 26 12:32 .bash_logout
+-rw-r--r--  1 mpotter mpotter   57 May 26 12:32 .bash_profile
+lrwxrwxrwx  1 mpotter mpotter   31 Jul 13 21:39 .bashrc -> /home/mpotter/.dotfiles/.bashrc
+-rw-r--r--  1 mpotter mpotter 3.8K May 26 12:32 .bashrc.pre_dot_install.2020-07-13
+lrwxrwxrwx  1 mpotter mpotter   33 Jul 13 22:43 bin -> /home/mpotter/.dotfilesBranch/bin
+drwx------ 19 mpotter mpotter 4.0K Jul 15 18:15 .cache
+drwxr-xr-x 22 mpotter mpotter 4.0K Jul 14 21:32 .config
+drwxr-xr-x  2 mpotter mpotter 4.0K Jun  7 11:00 Desktop
+-rw-r--r--  1 mpotter mpotter 4.8K Oct 29  2017 .dir_colors
+-rw-r--r--  1 mpotter mpotter   21 Jul 13 21:26 .dmrc
+drwxr-xr-x  2 mpotter mpotter 4.0K Jul 13 21:39 .docker
+drwxr-xr-x  2 mpotter mpotter 4.0K Jun  7 11:00 Documents
+drwxr-xr-x 17 mpotter mpotter 4.0K Jul 15 14:56 .dotfiles
+drwx------  4 mpotter mpotter 4.0K Jul 13 22:11 .dotfiles2
+drwxr-xr-x  5 mpotter mpotter 4.0K Jul 15 12:04 .dotfilesBranch
+drwxr-xr-x  2 mpotter mpotter 4.0K Jun  7 11:00 Downloads
+drwxr-xr-x 13 mpotter mpotter 4.0K Jul 14 19:47 .fonts
+lrwxrwxrwx  1 mpotter mpotter   34 Jul 13 21:39 .gitconfig -> /home/mpotter/.dotfiles/.gitconfig
+lrwxrwxrwx  1 mpotter mpotter   41 Jul 13 21:39 .gitignore_global -> /home/mpotter/.dotfiles/.gitignore_global
+drwx------  3 mpotter mpotter 4.0K Jul 15 18:09 .gnupg
+lrwxrwxrwx  1 mpotter mpotter   40 Jul 13 21:39 .hgignore_global -> /home/mpotter/.dotfiles/.hgignore_global
+-rw-------  1 mpotter mpotter  31K Jul 15 21:35 .histfile
+drwxr-xr-x  2 mpotter mpotter 4.0K Jul 13 22:24 .i3
+lrwxrwxrwx  1 mpotter mpotter   32 Jul 13 21:39 .inputrc -> /home/mpotter/.dotfiles/.inputrc
+drwxr-xr-x  3 mpotter mpotter 4.0K Jul 13 21:39 .ipython
+lrwxrwxrwx  1 mpotter mpotter   27 Jul 13 21:39 .jq -> /home/mpotter/.dotfiles/.jq
+drwx------  2 mpotter mpotter 4.0K Jul 15 21:06 .keychain
+-rw-------  1 mpotter mpotter   54 Jul 15 14:55 .lesshst
+drwxr-xr-x  4 mpotter mpotter 4.0K Jul 15 18:15 .local
+drwx------  5 mpotter mpotter 4.0K Jun  7 11:00 .mozilla
+drwxr-xr-x  5 mpotter mpotter 4.0K Jul 14 21:31 .npm
+drwxr-xr-x  4 mpotter mpotter 4.0K Jul 14 21:31 .npm-packages
+-rw-r--r--  1 mpotter mpotter   23 Jul 14 21:31 .npmrc
+drwxr-xr-x 14 mpotter mpotter  12K Jul 15 18:04 .password-store
+lrwxrwxrwx  1 mpotter mpotter   32 Jul 14 21:23 .profile -> /home/mpotter/.dotfiles/.profile
+-rw-r--r--  1 mpotter mpotter   64 May 12 13:34 .profile.pre_dot_install.2020-07-13
+lrwxrwxrwx  1 mpotter mpotter   40 Jul 13 21:39 .selected_editor -> /home/mpotter/.dotfiles/.selected_editor
+drwxr-xr-x  5 mpotter mpotter 4.0K Jul 15 18:25 src
+drwx------  2 mpotter mpotter 4.0K Jul 15 14:20 .ssh
+lrwxrwxrwx  1 mpotter mpotter   34 Jul 13 21:39 .templates -> /home/mpotter/.dotfiles/.templates
+lrwxrwxrwx  1 mpotter mpotter   43 Jul 13 22:24 .termlaunchrc -> /home/mpotter/.dotfilesBranch/.termlaunchrc
+drwxr-xr-x  3 mpotter mpotter 4.0K Jul 15 18:14 tmp
+lrwxrwxrwx  1 mpotter mpotter   34 Jul 13 21:39 .tmux.conf -> /home/mpotter/.dotfiles/.tmux.conf
+drwxr-xr-x  4 mpotter mpotter 4.0K Jul 13 21:39 .vim
+-rw-------  1 mpotter mpotter  20K Jul 15 21:13 .viminfo
+lrwxrwxrwx  1 mpotter mpotter   30 Jul 13 21:39 .vimrc -> /home/mpotter/.dotfiles/.vimrc
+drwxr-xr-x  2 mpotter mpotter 4.0K Jul 13 21:39 .w3m
+-rw-------  1 mpotter mpotter   50 Jul 15 18:03 .Xauthority
+-rwxr-xr-x  1 mpotter mpotter  100 Oct 29  2017 .Xclients
+-rwxr-xr-x  1 mpotter mpotter 1.5K May 12 13:34 .xinitrc
+-rw-r--r--  1 mpotter mpotter   17 Jul 15 20:24 .Xresources
+-rw-------  1 mpotter mpotter  27K Jul 15 21:30 .xsession-errors
+-rw-------  1 mpotter mpotter 3.4K Jul 15 12:18 .xsession-errors.old
+-rw-r--r--  1 mpotter mpotter  116 Jul 14 21:32 .yarnrc
+-rw-r--r--  1 mpotter mpotter  47K Jul 13 22:15 .zcompdump
+-rw-r--r--  1 mpotter mpotter   14 Jul 15 14:32 .zlogin
+-rw-r--r--  1 mpotter mpotter   16 Jul 15 14:31 .zprofile
+lrwxrwxrwx  1 mpotter mpotter   36 Jul 13 21:39 .zsh_aliases -> /home/mpotter/.dotfiles/.zsh_aliases
+lrwxrwxrwx  1 mpotter mpotter   40 Jul 13 21:39 .zsh_completions -> /home/mpotter/.dotfiles/.zsh_completions
+lrwxrwxrwx  1 mpotter mpotter   31 Jul 13 21:39 .zshenv -> /home/mpotter/.dotfiles/.zshenv
+lrwxrwxrwx  1 mpotter mpotter   30 Jul 13 21:39 .zshrc -> /home/mpotter/.dotfiles/.zshrc
+-rw-r--r--  1 mpotter mpotter   27 Jul 15 14:47 .zshrc.extend
+-rw-r--r--  1 mpotter mpotter 9.5K Aug 13  2018 .zshrc.pre_dot_install.2020-07-13
