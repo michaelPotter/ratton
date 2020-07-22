@@ -21,7 +21,7 @@ def main():
     pager_box = Box(Point(1,2), width=term.width - 2, height=11)
     pager = linepager.LinePager(pager_box, text)
 
-    with term.fullscreen(), term.cbreak():
+    with term.fullscreen(), term.cbreak(), term.hidden_cursor():
         pager.draw()
         pager.focus()
         shapes.box(pager_border)

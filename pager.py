@@ -58,6 +58,15 @@ class Pager(object):
         line = self.text.getLines(self.pos + n, 1)[0][:self.width]
         return f'{line:{self.width}}'
 
+    def repaint_line(self, n, attr):
+        """
+        Repaints line n with the given text attribute
+        attr can be any text attr that term takes.
+        For example you could repaint line 4 with "bold_blink_red_on_green"
+        """
+        printat(self.x, self.y + n, getattr(term, attr)(self.get_line(self.line)))
+
+
     @property
     def width(self):
         return self.box.width
