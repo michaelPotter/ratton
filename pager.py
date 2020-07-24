@@ -28,7 +28,7 @@ class Pager(object):
             # truncate & print each line
             for y,line in enumerate(text, self.y):
                 line = line[:self.width]
-                print(term.move_xy(self.x, y) + line.ljust(self.width))
+                p(term.move_xy(self.x, y) + line.ljust(self.width))
 
     def scroll_up(self, n=1):
         """ scroll the pager up one line """

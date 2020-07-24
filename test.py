@@ -17,14 +17,14 @@ def main():
     with open('ls.txt') as f:
         text = f.read()
 
-    pager_border = Box(Point(0,1), width=term.width, height=13)
-    pager_box = Box(Point(1,2), width=term.width - 2, height=11)
+    pager_border = Box(Point(0,0), width=term.width, height=term.height)
+    pager_box = Box(Point(0,0), width=term.width, height=term.height )
     pager = linepager.LinePager(pager_box, text)
 
     with term.fullscreen(), term.cbreak(), term.hidden_cursor():
         pager.draw()
         pager.focus()
-        shapes.box(pager_border)
+        # shapes.box(pager_border)
         while True:
             key = term.inkey()
             if key == 'q':
