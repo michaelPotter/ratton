@@ -29,7 +29,7 @@ def pager_mode_keysink(key, pager):
     elif key == 'l':
         p(term.move_right(1))
     elif key == 'G':
-        pager.scroll_bottom()
+        pager.goto_line('$')
     elif key == 'L':
         pager.bottom_line()
     elif key == 'H':
@@ -42,7 +42,7 @@ def pager_mode_keysink(key, pager):
     elif key == 'g':
         key2 = term.inkey(timeout=1)
         if key2 == 'g':
-            pager.scroll_top()
+            pager.goto_line(1)
 
 
 def cmd_line_mode():

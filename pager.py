@@ -12,6 +12,15 @@ class Pager(object):
     Renders a pager of content on a subsection of the screen
     Allows scrolling through the content
     This displays the text, but doesn't handle any cursor actions.
+
+    important attributes:
+
+    box: this is the bounding box that the pager can display in
+    text: the buffer of text this pager is paging
+    pos: the lineno of the first line of text the pager is currently
+        displaying. may not go above len(text) - box.height
+    apos: this is the lineno of the _last_ line of text the pager is
+        displaying.
     """
     # TODO this first! add function for getting the nth line of text
     # TODO: implement side scrolling
@@ -66,6 +75,9 @@ class Pager(object):
         """
         printat(self.x, self.y + n, getattr(term, attr)(self.get_line(self.line)))
 
+    @property
+    def apos(self):
+        return self.pos + self.height - 1
 
     @property
     def width(self):
