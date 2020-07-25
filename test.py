@@ -12,27 +12,7 @@ import linepager
 from models import *
 from util import *
 import shapes
-
-def main():
-    with open('ls.txt') as f:
-        text = f.read()
-
-    pager_box = Box(Point(0,0), width=term.width, height=term.height-1 )
-    pager = linepager.LinePager(pager_box, text)
-
-    with term.fullscreen():
-        global mode
-        mode = "pager"
-        pager.draw()
-        pager.focus()
-        while True:
-            if mode == "pager":
-                with term.cbreak():
-                    key = term.inkey()
-                    pager_mode_keysink(key, pager)
-            elif mode == "cmdline":
-                cmd_line_mode()
-                mode = "pager"
+import readline
 
 
 def pager_mode_keysink(key, pager):
@@ -66,32 +46,34 @@ def pager_mode_keysink(key, pager):
 
 
 def cmd_line_mode():
-    with term.location(0, term.height-1), term.cbreak():
+    with term.location(0, term.height-1):
 
-        # this erases the whole line
-        p(':'.ljust(term.width))
+        cmd = input(":")
 
-        # so move back to the first char
-        p(term.move_xy(1, term.height-1))
-        
-        # get the input command
-        cmd = ""
-        while True:
-            key = term.inkey()
-            if key.code == term.KEY_ENTER:
-                break
-            cmd += key
-            p(key)
-
-def demo():
-    print(term.home + term.clear + term.move_y(term.height // 2))
-    print(term.black_on_darkkhaki(term.center('press any key to continue')))
+        pager.draw()
+        if cmd.strip() == "q":
+            exit()
 
 
-    with term.cbreak(), term.hidden_cursor():
-        inp = term.inkey()
 
-    print(term.move_down(2) + 'You pressed ' + term.bold(repr(inp)))
 
 if __name__ == "__main__":
-    main()
+    with open('ls.txt') as f:
+        text = f.read()
+
+    pager_box = Box(Point(0,0), width=term.width, height=term.height-1 )
+    pager = linepager.LinePager(pager_box, text)
+
+    with term.fullscreen():
+        global mode
+        mode = "pager"
+        pager.draw()
+        pager.focus()
+        while True:
+            if mode == "pager":
+                with term.cbreak():
+                    key = term.inkey()
+                    pager_mode_keysink(key, pager)
+            elif mode == "cmdline":
+                cmd_line_mode()
+                mode = "pager"
