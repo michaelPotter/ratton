@@ -7,12 +7,14 @@
 
 from blessed import Terminal
 
+import os.path
 from pager import Pager
 import linepager
 from models import *
 from util import *
 import shapes
 import readline
+import subprocess
 
 
 def pager_mode_keysink(key, pager):
@@ -42,7 +44,7 @@ def pager_mode_keysink(key, pager):
     elif key == 'g':
         key2 = term.inkey(timeout=1)
         if key2 == 'g':
-            pager.goto_line(1)
+            pager.goto_line(0)
 
 
 def cmd_line_mode():
@@ -58,8 +60,8 @@ def cmd_line_mode():
 
 
 if __name__ == "__main__":
-    with open('ls.txt') as f:
-        text = f.read()
+    proc = subprocess.run(["ls", "-al", os.path.expanduser("~")], capture_output=True)
+    text = proc.stdout.decode('utf-8')
 
     pager_box = Box(Point(0,0), width=term.width, height=term.height-1 )
     pager = linepager.LinePager(pager_box, text)
