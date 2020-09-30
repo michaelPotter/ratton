@@ -15,6 +15,7 @@ from util import *
 import shapes
 import readline
 import subprocess
+import re
 
 
 def pager_mode_keysink(key, pager):
@@ -45,6 +46,14 @@ def pager_mode_keysink(key, pager):
         key2 = term.inkey(timeout=1)
         if key2 == 'g':
             pager.goto_line(0)
+    elif key.code == term.KEY_ENTER:
+        match = re.search("^d", pager.get_focused())
+        if (match):
+            d = pager.get_focused().split()[8]
+            global current_dir
+            current_dir = f"{current_dir}/{d}"
+            # TODO clear screen before displaying subdir
+            show_dir(current_dir)
 
 
 def cmd_line_mode():
@@ -57,13 +66,11 @@ def cmd_line_mode():
             exit()
 
 
-
-
-if __name__ == "__main__":
-    proc = subprocess.run(["ls", "-al", os.path.expanduser("~")], capture_output=True)
+def show_dir(dirname):
+    proc = subprocess.run(["ls", "-al", os.path.expanduser(dirname)], capture_output=True)
     text = proc.stdout.decode('utf-8')
 
-    pager_box = Box(Point(0,0), width=term.width, height=term.height-1 )
+    pager_box = Box(Point(0,0), width=term.width, height=term.height-2 )
     pager = linepager.LinePager(pager_box, text)
 
     with term.fullscreen():
@@ -79,3 +86,9 @@ if __name__ == "__main__":
             elif mode == "cmdline":
                 cmd_line_mode()
                 mode = "pager"
+
+
+
+if __name__ == "__main__":
+    current_dir = "~/mail"
+    show_dir(current_dir)

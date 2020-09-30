@@ -112,3 +112,7 @@ class LinePager(pager.Pager):
         self.line = self.height // 2
         p(term.move_y(self.y + self.line))
         self.draw()
+
+    def get_focused(self):
+        """ return the currently focused line """
+        return self.get_line(self.line)

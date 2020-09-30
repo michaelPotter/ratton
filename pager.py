@@ -30,7 +30,10 @@ class Pager(object):
         self.box = box
         self.text = Buffer(text)
         self.pos = 0
-        
+
+        if len(self.text) == 0:
+            raise Exception("pager input length is 0")
+
     def draw(self):
         with term.location(*self.box.start):
             text = self.text.getLines(self.pos, self.height)
@@ -64,7 +67,14 @@ class Pager(object):
         Return the nth line of the pager
         return the empty string if n is out of bounds
         """
-        line = self.text.getLines(self.pos + n, 1)[0][:self.width]
+        return self.text.getLines(self.pos + n, 1)[0]
+
+    def trim_line(self, n):
+        """
+        Return the nth line of the pager, trimmed to fit the screen
+        return the empty string if n is out of bounds
+        """
+        line = self.get_line(n)[:self.width]
         return f'{line:{self.width}}'
 
     def repaint_line(self, n, attr):
@@ -73,7 +83,7 @@ class Pager(object):
         attr can be any text attr that term takes.
         For example you could repaint line 4 with "bold_blink_red_on_green"
         """
-        printat(self.x, self.y + n, getattr(term, attr)(self.get_line(self.line)))
+        printat(self.x, self.y + n, getattr(term, attr)(self.trim_line(n)))
 
     @property
     def apos(self):
@@ -108,4 +118,4 @@ class Buffer(object):
 
     def __len__(self):
         return len(self.text)
-        
+
