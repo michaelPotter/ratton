@@ -13,49 +13,69 @@ from prompt_toolkit.layout.controls import BufferControl, FormattedTextControl
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.layout.layout import Layout
 
+import re
 import os.path
 import subprocess
 
-proc = subprocess.run(["ls", "-al", os.path.expanduser("~")], capture_output=True)
-text = proc.stdout.decode('utf-8')
-
-buffer = Buffer(document=Document(text), read_only=True)
-buffer.cursor_position = 0 # start at top of document
-bufferControl = BufferControl(buffer)
-body = Window(bufferControl, cursorline=True)
+def ls(path):
+    proc = subprocess.run(["ls", "-al", os.path.expanduser(path)], capture_output=True)
+    return proc.stdout.decode('utf-8')
 
 kb = KeyBindings()
+def add_bindings(buffer):
+    @kb.add("h")
+    def _(event):
+        buffer.cursor_left()
+    @kb.add("l")
+    def _(event):
+        buffer.cursor_right()
+    @kb.add("j")
+    def _(event):
+        buffer.cursor_down()
+    @kb.add("k")
+    def _(event):
+        buffer.cursor_up()
+    @kb.add("g", "g")
+    def _(event):
+        buffer.cursor_position = 0
+    @kb.add("$")
+    def _(event):
+        buffer.cursor_right(buffer.document.get_end_of_line_position())
+    @kb.add("G")
+    def _(event):
+        buffer.cursor_position = len(buffer.text)
+    @kb.add("enter")
+    def _(event):
+        match = re.search("^d", buffer.document.current_line)
+        if (match):
+            print(buffer.document.current_line)
+
+
+def dirWindow(path):
+    text = ls(path)
+    buffer = Buffer(document=Document(text), read_only=True)
+    buffer.cursor_position = 0 # start at top of document
+    bufferControl = BufferControl(buffer)
+    win = Window(bufferControl, cursorline=True)
+    add_bindings(buffer)
+    return win
+
+
+win = dirWindow("~")
+
 
 @kb.add("q")
 def _(event):
     " Quit application. "
     event.app.exit()
 
-@kb.add("h")
-def _(event):
-    buffer.cursor_left()
-@kb.add("l")
-def _(event):
-    buffer.cursor_right()
-@kb.add("j")
-def _(event):
-    buffer.cursor_down()
-    # bufferControl.move_cursor_down()
-@kb.add("k")
-def _(event):
-    bufferControl.move_cursor_up()
-@kb.add("g", "g")
-def _(event):
-    buffer.cursor_position = 0
-@kb.add("$")
-def _(event):
-    buffer.cursor_right(buffer.document.get_end_of_line_position())
-@kb.add("G")
-def _(event):
-    # buffer.cursor_position = buffer.document.line_count
-    buffer.cursor_position = len(buffer.text)
 
-application = Application(layout=Layout(body), key_bindings=kb, full_screen=True)
+application = Application(
+        layout=Layout(win),
+        key_bindings=kb,
+        full_screen=True,
+        enable_page_navigation_bindings=True
+        )
 
 def run():
     application.run()

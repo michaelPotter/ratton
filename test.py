@@ -47,12 +47,11 @@ def pager_mode_keysink(key, pager):
         if key2 == 'g':
             pager.goto_line(0)
     elif key.code == term.KEY_ENTER:
-        match = re.search("^d", pager.get_focused())
+        match = re.search("^d", pager.get_focused_line())
         if (match):
-            d = pager.get_focused().split()[8]
+            d = pager.get_focused_line().split()[8]
             global current_dir
             current_dir = f"{current_dir}/{d}"
-            # TODO clear screen before displaying subdir
             show_dir(current_dir)
 
 
@@ -74,6 +73,7 @@ def show_dir(dirname):
     pager = linepager.LinePager(pager_box, text)
 
     with term.fullscreen():
+        print(term.clear)
         global mode
         mode = "pager"
         pager.draw()

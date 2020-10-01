@@ -88,7 +88,7 @@ class LinePager(pager.Pager):
 
     def down(self, n=1):
         """ move the cursor down """
-        if self.line < self.box.height - 1:
+        if self.line < self.box.height - 1 and self.line < len(self.text) - 1:
             self.line += 1
             p(term.move_down(1))
             self.draw()
@@ -113,6 +113,6 @@ class LinePager(pager.Pager):
         p(term.move_y(self.y + self.line))
         self.draw()
 
-    def get_focused(self):
+    def get_focused_line(self):
         """ return the currently focused line """
         return self.get_line(self.line)
