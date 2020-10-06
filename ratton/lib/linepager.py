@@ -5,8 +5,8 @@
 # Michael Potter
 # 2020-07-16
 
-from util import *
-import pager
+from ratton.lib.util import *
+import ratton.lib.pager as pager
 
 class LinePager(pager.Pager):
     """

@@ -8,15 +8,16 @@
 from blessed import Terminal
 
 import os.path
-from pager import Pager
-import linepager
-from models import *
-from util import *
-import keysink
-import shapes
 import readline
 import subprocess
 import re
+
+import ratton.lib.linepager as linepager
+import ratton.lib.keysink as keysink
+import ratton.lib.shapes as shapes
+from ratton.lib.pager import Pager
+from ratton.lib.models import *
+from ratton.lib.util import *
 
 
 def get_app_keysink(pager):

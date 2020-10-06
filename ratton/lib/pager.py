@@ -5,7 +5,7 @@
 # Michael Potter
 # 2020-07-15
 
-from util import *
+from ratton.lib.util import *
 
 class Pager(object):
     """

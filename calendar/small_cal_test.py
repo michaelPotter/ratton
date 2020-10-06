@@ -11,9 +11,9 @@
 # can only get better in a larger terminal
 
 from blessed import Terminal
-from util import *
-from models import *
-import shapes
+from ratton.lib.util import *
+from ratton.lib.models import *
+import ratton.lib.shapes as shapes
 
 def main():
     with term.fullscreen(), term.cbreak(), term.hidden_cursor():

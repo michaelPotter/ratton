@@ -5,7 +5,7 @@
 # Michael Potter
 # 2020-07-16
 
-from util import *
+from ratton.lib.util import *
 
 def vline(x, y, height):
     with term.location(x, y):
