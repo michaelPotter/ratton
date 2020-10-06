@@ -12,47 +12,30 @@ from pager import Pager
 import linepager
 from models import *
 from util import *
+import keysink
 import shapes
 import readline
 import subprocess
 import re
 
 
-def pager_mode_keysink(key, pager):
-    if key == 'q':
-        exit()
-    elif key == 'j':
-        # p(term.move_down(1))
-        pager.down()
-    elif key == 'k':
-        # p(term.move_up(1))
-        pager.up()
-    elif key == 'h':
-        p(term.move_left(1))
-    elif key == 'l':
-        p(term.move_right(1))
-    elif key == 'G':
-        pager.goto_line('$')
-    elif key == 'L':
-        pager.bottom_line()
-    elif key == 'H':
-        pager.top_line()
-    elif key == 'M':
-        pager.middle_line()
-    elif key == ':':
-        global mode
-        mode = "cmdline"
-    elif key == 'g':
-        key2 = term.inkey(timeout=1)
-        if key2 == 'g':
-            pager.goto_line(0)
-    elif key.code == term.KEY_ENTER:
-        match = re.search("^d", pager.get_focused_line())
-        if (match):
-            d = pager.get_focused_line().split()[8]
-            global current_dir
-            current_dir = f"{current_dir}/{d}"
-            show_dir(current_dir)
+def get_app_keysink(pager):
+    def sink(key):
+        if key == 'q':
+            exit()
+        elif key == ':':
+            global mode
+            mode = "cmdline"
+        elif key.code == term.KEY_ENTER:
+            match = re.search("^d", pager.get_focused_line())
+            if (match):
+                d = pager.get_focused_line().split()[8]
+                global current_dir
+                current_dir = f"{current_dir}/{d}"
+                show_dir(current_dir)
+        else:
+            return False
+    return sink
 
 
 def cmd_line_mode():
@@ -72,6 +55,10 @@ def show_dir(dirname):
     pager_box = Box(Point(0,0), width=term.width, height=term.height-2 )
     pager = linepager.LinePager(pager_box, text)
 
+    sink = keysink.MultiKeysink()
+    sink.add(keysink.get_pager_keysink(pager))
+    sink.add(get_app_keysink(pager))
+
     with term.fullscreen():
         print(term.clear)
         global mode
@@ -82,7 +69,7 @@ def show_dir(dirname):
             if mode == "pager":
                 with term.cbreak():
                     key = term.inkey()
-                    pager_mode_keysink(key, pager)
+                    sink.apply(key)
             elif mode == "cmdline":
                 cmd_line_mode()
                 mode = "pager"
