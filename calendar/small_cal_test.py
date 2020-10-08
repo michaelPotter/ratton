@@ -18,7 +18,7 @@ import ratton.lib.shapes as shapes
 def main():
     with term.fullscreen(), term.cbreak(), term.hidden_cursor():
         pager_border = Box(Point(2,0), width=82, height=26)
-        shapes.box(pager_border)
+        shapes.box(pager_border, "fancy")
 
         print_times()
         print_days()
@@ -37,6 +37,9 @@ def print_times():
     for h in [ y for x in [range(9,13), range(1,8)] for y in x ]:
         for m in [ "00", "30" ]:
             printat(3, i, (f"{h:02}:{m}"))
+            # hour lines
+            # if i%2 == 1:
+            #     shapes.hline(8, i, 82 - 9, '`')
             i += 1
 
 def print_days():
@@ -62,9 +65,9 @@ def sample_events():
     w = 10
     w = 9
 
-    def event_text(x, y, t):
+    def event_text(x, y, t, attr="black_on_magenta"):
         t = t[:w]
-        printat(x, y, getattr(term, "black_on_magenta")(t))
+        printat(x, y, getattr(term, attr)(t))
 
     # wed, 1-4, sprint planning
     color_block("magenta", Box(Point(39, 11), width=w, height=6))
@@ -78,8 +81,34 @@ def sample_events():
     event_text(29, 12, "view/Ret..")
     event_text(29, 13, "1-2:30pm")
 
-    for i in [19, 29, 49, 59]:
+    # thu, 1-4, sprint planning
+    color_block("black", Box(Point(49, 11), width=w, height=6))
+    shapes.box(Box(Point(49, 11), width=w, height=6), "outer", attr="magenta")
+    event_text(50, 12, "Sprint", "magenta_on_black")
+    event_text(50, 13, "Planning", "magenta_on_black")
+    event_text(50, 14, "1-4pm", "magenta_on_black")
+
+    # fri, 1-4, sprint planning
+    x=59
+    color_block("black", Box(Point(x, 11), width=w, height=6))
+    shapes.box(Box(Point(x, 11), width=w, height=6), "fancy", attr="magenta")
+    event_text(x+1, 12, "Sprint", "magenta_on_black")
+    event_text(x+1, 13, "Planning", "magenta_on_black")
+    event_text(x+1, 14, "1-4pm", "magenta_on_black")
+
+    # sat, 1-4, sprint planning
+    x=69
+    color_block("black", Box(Point(x, 11), width=w, height=6))
+    shapes.box(Box(Point(x, 11), width=w, height=6), "eighth", attr="magenta")
+    event_text(x+1, 12, "Sprint", "magenta_on_black")
+    event_text(x+1, 13, "Planning", "magenta_on_black")
+    event_text(x+1, 14, "1-4pm", "magenta_on_black")
+
+    # Standup
+    for i in [19, 29, 39]:
         event_text(i, 4, "Standup   ")
+    event_text(49, 4, "Standup   ", "magenta_on_black")
+    printat(59, 4, term.underline(term.magenta_on_black("Standup   ")))
 
     
 
