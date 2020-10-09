@@ -38,7 +38,7 @@ def main():
         print_days()
         sample_events()
 
-        ticker = Ticker("Events w/ long text could scroll (11-11:30am)", Box(Point(mon.x,7), width=day_width, height=1))
+        ticker = Ticker("Events w/ long text could scroll (11-11:30am)", Box(Point(mon.x,7), width=day_width-1, height=1))
 
         # # line numbers
         # for i in range(1,24):
@@ -114,9 +114,10 @@ def sample_events():
         printat(x, y, getattr(term, attr)(t))
 
     # Standup(s)
-    for i in [mon.x, tue.x, wed.x, fri.x]:
-        event_text(i, 4, "Standup   ")
-    event_text(wed.x, 4, "Standup   ", "magenta_on_black")
+    event_text(mon.x, 4, "Standup   ")
+    event_text(tue.x, 4, "Standup   ", "black_on_gray")
+    event_text(fri.x, 4, "Standup   ", "black_on_teal")
+    event_text(wed.x, 4, "Standup   ", "yellow_on_black")
     # printat(thu.x, 3, term.underline(term.magenta_on_black("    ▁▁▁▁▁")))
     printat(thu.x, 4, term.underline(term.magenta_on_black("Standup  ")))
 
@@ -134,11 +135,11 @@ def sample_events():
 
     # wed, 1-4, sprint planning
     color_block("black", Box(Point(wed.x, 11), width=w, height=6))
-    shapes.box(Box(Point(wed.x, 11), width=w, height=6), "outer", attr="magenta")
-    event_text(wed.x+1, 12, "Testing", "magenta_on_black")
-    event_text(wed.x+1, 13, "other ", "magenta_on_black")
-    event_text(wed.x+1, 14, "designs", "magenta_on_black")
-    event_text(wed.x+1, 15, "1-4pm", "magenta_on_black")
+    shapes.box(Box(Point(wed.x, 11), width=w, height=6), "outer", attr="yellow")
+    event_text(wed.x+1, 12, "Testing", "yellow_on_black")
+    event_text(wed.x+1, 13, "other ", "yellow_on_black")
+    event_text(wed.x+1, 14, "designs", "yellow_on_black")
+    event_text(wed.x+1, 15, "1-4pm", "yellow_on_black")
 
     # thu, 1-4, sprint planning
     color_block("black", Box(Point(thu.x, 11), width=w, height=6))
@@ -160,7 +161,7 @@ def sample_events():
     # eighth_charset = Charset('▔', '▕', '▁', '▏', '╲', '╱', '╲', '╱')
     printat(fri.x, 5, "▁"*9, "magenta_on_black")
     printat(fri.x-1, 6, "▕this ones▏", "magenta_on_black")
-    printat(fri.x-1, 7, "▕fudgy    ▏", "magenta_on_black")
+    printat(fri.x-1, 7, "▕lil fudgy▏", "magenta_on_black")
     printat(fri.x, 8, "▔"*9, "magenta_on_black")
 
     # sat, 1-4, sprint planning
