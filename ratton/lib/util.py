@@ -14,6 +14,8 @@ term = Terminal()
 
 p = partial(print, end='', flush=True)
 
-def printat(x, y, s):
+def printat(x, y, text, attr=None):
+    if attr:
+        text = getattr(term, attr)(text)
     with term.location(x,y):
-        p(s)
+        p(text)

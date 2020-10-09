@@ -8,12 +8,16 @@
 from ratton.lib.util import *
 from collections import namedtuple
 
-def vline(x, y, height, char='|'):
+def vline(x, y, height, char='|', attr=None):
+    if attr:
+        char = getattr(term, attr)(char)
     with term.location(x, y):
         for yy in range(y, y + height):
             p(term.move_xy(x, yy) + char)
 
-def hline(x, y, width, char='-'):
+def hline(x, y, width, char='-', attr=None):
+    if attr:
+        char = getattr(term, attr)(char)
     with term.location(x, y):
         for xx in range(x, x + width):
             p(term.move_xy(xx, y) + char)
@@ -26,7 +30,7 @@ def box(box, charset="ascii", attr=None):
     ascii_charset = Charset('-', '|', '-', '|', '+', '+', '+', '+')
     fancy_charset = Charset('─', '│', '─', '│', '┐', '┘', '└', '┌')
     outer_charset = Charset('▀', '▐', '▄', '▌', '▜', '▟', '▙', '▛')
-    eighth_charset = Charset('▔', '▕', '▁', '▏', ' ', ' ', ' ', '╱')
+    eighth_charset = Charset('▔', '▕', '▁', '▏', '╲', '╱', '╲', '╱')
 
     if charset == "ascii":
         c = ascii_charset
