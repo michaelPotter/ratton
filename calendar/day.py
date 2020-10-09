@@ -142,7 +142,13 @@ class DayView(object):
             ev = EventView(e, self.box.offset(self._get_event_box(e)))
             ev.render()
 
+        collisions = self._get_collisions(self.events)
+        # print collisions
+        for c in collisions:
+            print(c.event.text, "  ", len(c.collisions))
+
     def _get_event_box(self, event):
+        """ returns the box an event should take up within the DayView box """
         last_line = self.box.height - 1
 
         start = self.hourscale.get_position(event.start)
@@ -152,7 +158,6 @@ class DayView(object):
             return None
         
         endtime = datetime.combine(date.today(), event.end) - timedelta(minutes=1)
-        print(endtime.time())
         end = self.hourscale.get_position(endtime.time())
         if end > last_line:
             end = last_line
@@ -161,7 +166,47 @@ class DayView(object):
 
         return Box(Point(0, start), Point(self.box.width - 1, end))
 
+    def _get_collisions(self, events):
+        ecd = [ EventCollisionData(e) for e in sorted(events, key=lambda e:e.start) ]
+
+        # count collisions
+        for i, e in enumerate(ecd):
+            j = i + 1
+            while j < len(ecd):
+                check_event = ecd[j]
+                print(f"i={i} j={j}  {e.event.text}: end={e.event.end} next_start={check_event.event.start}")
+                if check_event.event.start < e.event.end:
+                    e.collisions.append(check_event)
+                    check_event.collisions.append(e)
+                    j += 1
+                else:
+                    break
+        return ecd
+
+
+
     
+class EventCollisionData(object):
+    """
+    This is a wrapper around an event that contains data about collisions with
+    other events. This is (should be) only used internally within the DayView
+    to determine how to lay out events.
+    """
+    def __init__(self, event, collisions=None, c_index=0, c_slots=1):
+        # event is the event we're wrapping
+        self.event = event
+        # collisions is a list of other events which we may be colliding with
+        self.collisions = collisions
+        if self.collisions == None:
+            self.collisions = []
+        # c_index is the collision index of this event.
+        # c_slots is the number of slots that are available to this event.
+        #
+        # e.g. if c_index == 0 and c_slots == 2, this event should take up the left half.
+        # if c_index == 1 and c_slots == 3, this event should take up the middle third.
+        self.c_index = c_index
+        self.c_slots = c_slots
+
 
 
 class EventView(object):
@@ -234,7 +279,7 @@ Event = namedtuple('Event', ('start', 'end', 'text', 'color'))
 
 if __name__ == "__main__":
     h=26
-    box = Box(Point(10,10), width=10, height=h)
+    box = Box(Point(60,10), width=10, height=h)
     border = box.bound_outer()
     events = [
             Event(time(9, 30), time(9, 45), 'Standup', 'magenta'),
@@ -243,7 +288,7 @@ if __name__ == "__main__":
             Event(time(12, 30), time(13, 30), 'Collision', 'red'),
             ]
 
-    scale_box = Box(Point(3, 10), width=5, height=h)
+    scale_box = Box(Point(53, 10), width=5, height=h)
     scale = HourScale(box.height, 3, time(9))
     hourView = HourScaleView(scale_box, scale)
 
@@ -257,8 +302,8 @@ if __name__ == "__main__":
             shapes.box(border)
             d.render()
             hourView.render()
-            print("lph: " , scale.lines_per_hour)
-            print("last time: " , scale.last_time_shown)
+            # print("lph: " , scale.lines_per_hour)
+            # print("last time: " , scale.last_time_shown)
 
         
         while True:
