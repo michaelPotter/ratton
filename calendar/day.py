@@ -240,30 +240,6 @@ def layout_events(events):
 
 
 
-
-class EventCollisionData(object):
-    """
-    This is a wrapper around an event that contains data about collisions with
-    other events. This is (should be) only used internally within the DayView
-    to determine how to lay out events.
-    """
-    def __init__(self, event, collisions=None, c_index=0, c_slots=1):
-        # event is the event we're wrapping
-        self.event = event
-        # collisions is a list of other events which we may be colliding with
-        self.collisions = collisions
-        if self.collisions == None:
-            self.collisions = []
-        # c_index is the collision index of this event.
-        # c_slots is the number of slots that are available to this event.
-        #
-        # e.g. if c_index == 0 and c_slots == 2, this event should take up the left half.
-        # if c_index == 1 and c_slots == 3, this event should take up the middle third.
-        self.c_index = c_index
-        self.c_slots = c_slots
-
-
-
 class EventView(object):
     """
     View for an Event. Pass in an event object and a bounding box where the
@@ -325,6 +301,59 @@ class EventView(object):
 
         return t
 
+
+class WeekView():
+    """
+    A class for rendering a series of days. Not strictly limited to showing a
+    week - could show any number of days
+    """
+
+    def __init__(self, box, events, num_days=7):
+        """
+        Constructor
+
+        :arg box Box: the area to render in
+        :arg events list[list[Event]]: A list of list of events. Each list of events represents a day
+        :arg num_days int: the number of days to show
+        """
+        emptyBox = Box(Point(0,0),Point(0,0))
+        self.hourscale = HourScale(box.height, 4, time(9))
+        self.num_days = num_days
+        self.scaleView = HourScaleView(emptyBox, self.hourscale)
+        self.days = [ DayView(emptyBox, e, self.hourscale) for e in events ]
+
+        self.resize(box)
+
+
+    def resize(self, box):
+        self.box = box
+
+        scaleHeight = self.box.height
+        self.hourscale.height = scaleHeight
+        self.scaleView.box = Box(Point(0, 2), width=6, height=scaleHeight)
+
+        day_width = ((self.box.width - 6) // self.num_days) - 1
+        day_height = self.box.height - 2
+        for i,d in enumerate(self.days):
+            d.box = Box(Point(6 + i * (day_width+1), 2), width=day_width, height=day_height)
+
+    def render(self):
+        print(term.clear)
+        self.scaleView.render()
+        for d in self.days:
+            d.render()
+
+    def zoom_in(self, n=1):
+        pass # TODO
+
+    def zoom_out(self, n=1):
+        pass # TODO
+
+    def scroll_up(self, n=1):
+        self.hourscale.scroll_up()
+
+    def scroll_down(self, n=1):
+        self.hourscale.scroll_down()
 
 
 
