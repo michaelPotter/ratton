@@ -12,6 +12,7 @@ from ratton.lib.models import *
 import ratton.lib.shapes as shapes
 import textwrap
 import math
+import signal
 
 class HourScale(object):
     """
@@ -367,17 +368,22 @@ if __name__ == "__main__":
             # print("lph: " , scale.lines_per_hour)
             # print("last time: " , scale.last_time_shown)
 
+        signal.signal(signal.SIGWINCH, lambda sig, action: render())
 
         while True:
             render()
             key = term.inkey()
             if key == 'j':
                 scale.scroll_down()
-            if key == 'k':
+            elif key == 'k':
                 scale.scroll_up()
-            if key == '-':
+            elif key == '-':
                 scale.zoom_out()
-            if key == '+':
+            elif key == '+':
                 scale.zoom_in()
+            elif key == '>':
+                d.box.width += 2
+            elif key == '<':
+                d.box.width -= 2
             elif key == 'q':
                 exit()
