@@ -28,7 +28,7 @@ class HourScale(object):
 
     def get_position(self, time):
         """
-        Returns the 
+        Returns the
         """
         # TODO handle hours that are too big? or just let clients deal w/it
         if time < self.start:
@@ -85,7 +85,7 @@ class HourScale(object):
         # FIXME can't show events past 11:00
         if self.last_time_shown.hour < 23:
             self.start = time(self.start.hour + 1)
-        
+
 
 class HourScaleView(object):
     """
@@ -94,7 +94,7 @@ class HourScaleView(object):
     def __init__(self, box, hourscale):
         self.box = box
         self.hourscale = hourscale
-    
+
     def render(self):
         # print(self.hourscale.last_time_shown)
         start = self.hourscale.start
@@ -137,18 +137,16 @@ class DayView(object):
 
 
     def render(self):
-        # TODO figure out multiple colliding events
+        layout_events(self.events)
         for e in self.events:
             ev = EventView(e, self.box.offset(self._get_event_box(e)))
             ev.render()
 
-        collisions = self._get_collisions(self.events)
-        # print collisions
-        for c in collisions:
-            print(c.event.text, "  ", len(c.collisions))
-
     def _get_event_box(self, event):
-        """ returns the box an event should take up within the DayView box """
+        """
+        Returns the box an event should take up within the DayView box
+        The event should have the left and right props set layout_events
+        """
         last_line = self.box.height - 1
 
         start = self.hourscale.get_position(event.start)
@@ -156,7 +154,7 @@ class DayView(object):
             start = 0
         elif start > last_line:
             return None
-        
+
         endtime = datetime.combine(date.today(), event.end) - timedelta(minutes=1)
         end = self.hourscale.get_position(endtime.time())
         if end > last_line:
@@ -164,28 +162,84 @@ class DayView(object):
         elif end < 0:
             return None
 
-        return Box(Point(0, start), Point(self.box.width - 1, end))
+        left = math.floor(self.box.width * event.left)
+        right = math.floor(self.box.width * event.right) - 1
 
-    def _get_collisions(self, events):
-        ecd = [ EventCollisionData(e) for e in sorted(events, key=lambda e:e.start) ]
+        return Box(Point(left, start), Point(right, end))
 
-        # count collisions
-        for i, e in enumerate(ecd):
-            j = i + 1
-            while j < len(ecd):
-                check_event = ecd[j]
-                print(f"i={i} j={j}  {e.event.text}: end={e.event.end} next_start={check_event.event.start}")
-                if check_event.event.start < e.event.end:
-                    e.collisions.append(check_event)
-                    check_event.collisions.append(e)
-                    j += 1
-                else:
+
+def layout_events(events):
+    """
+    See https://stackoverflow.com/questions/11311410
+
+    1. Think of an unlimited grid with just a left edge.
+    2. Each event is one cell wide, and the height and vertical position is
+       fixed based on starting and ending times.
+    3. Try to place each event in a column as far left as possible, without
+       it intersecting any earlier event in that column.
+    4. Then, when each connected group of events is placed, their actual
+       widths will be 1/n of the maximum number of columns used by the
+       group.
+    5. You could also expand the events at the far left and right to use up
+       any remaining space.
+    """
+
+    def _layout_events(events):
+        # 2d list. Each item represents a column, and should be a list of events.
+        columns = []
+
+        lastEnding = None
+        for e in sorted(events, key=lambda e:e.start):
+
+            # if (lastEnding and e.start >= lastEnding):
+            #     pack_events(columns)
+            #     lastEnding = None
+
+            placed = False
+            for col in columns:
+                if col and not col[-1].intersects(e):
+                    col.append(e)
+                    placed = True
                     break
-        return ecd
+
+            # if e doesn't fit into any existing cols (or there are none),
+            # add a new one
+            if not placed:
+                columns.append([e])
+
+            if lastEnding is None or e.end > lastEnding:
+                lastEnding = e.end
+
+        if len(columns) > 0:
+            pack_events(columns)
+
+    def pack_events(columns):
+        """
+        Step 4. set the widths of each event
+        """
+        for i,col in enumerate(columns):
+            for event in col:
+                colspan = expand_events(event, i, columns)
+                event.left = i / len(columns)
+                event.right = (i + colspan) / len(columns)
+
+    def expand_events(event, icolumn, columns):
+        """
+        Step 5. expand events where there is space
+        """
+        colspan = 1
+        for c in columns[icolumn + 1:]:
+            for e in c:
+                if e.intersects(event):
+                    return colspan
+            colspan += 1
+        return colspan
+
+    _layout_events(events)
 
 
 
-    
+
 class EventCollisionData(object):
     """
     This is a wrapper around an event that contains data about collisions with
@@ -251,7 +305,7 @@ class EventView(object):
             print_text(time, self.box.height - 1)
 
 
-        
+
     def _build_time_string(self):
         # TODO add am/pm?
         # TODO what if width == 10 and time is 11:30-12:30 (11)
@@ -267,14 +321,22 @@ class EventView(object):
         end   = format(e)
 
         t = f"{start}-{end}"
-        
+
         return t
 
 
-        
 
-# dirty nasty hack
-Event = namedtuple('Event', ('start', 'end', 'text', 'color'))
+
+class Event(object):
+    def __init__(self, start, end, text, color):
+        self.start = start
+        self.end = end
+        self.text = text
+        self.color = color
+
+    def intersects(self, other):
+        return self.start < other.end and other.start < self.end
+
 
 
 if __name__ == "__main__":
@@ -305,7 +367,7 @@ if __name__ == "__main__":
             # print("lph: " , scale.lines_per_hour)
             # print("last time: " , scale.last_time_shown)
 
-        
+
         while True:
             render()
             key = term.inkey()
