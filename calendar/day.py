@@ -372,10 +372,10 @@ class WeekView():
             d.render()
 
     def zoom_in(self, n=1):
-        pass # TODO
+        self.hourscale.zoom_in()
 
     def zoom_out(self, n=1):
-        pass # TODO
+        self.hourscale.zoom_out()
 
     def scroll_up(self, n=1):
         self.hourscale.scroll_up()
