@@ -19,6 +19,8 @@ class HourScale(object):
     A class to handle calculations about where to position a time on a scale.
     e.g. given a box of height 6, where the first line represents 9am, where do
     we put 10:30?
+    This is a "model" class, it doesn't do any rendering, but does have a mild
+    concept of screen layout with the height and zoom/scroll features.
     """
     # FIXME start time is forced to be on a round hour and all calculations are
     # based on that.
@@ -140,6 +142,7 @@ class DayView():
     def render(self):
         self.content.render()
         printat(self.box.x, self.box.y, self.daytext.center(self.box.width))
+        shapes.vline(self.box.end.x, self.box.y + 2, self.box.height, '│', "webgrey")
 
     def resize(self, box):
         self.box = box
@@ -290,6 +293,16 @@ class EventView(object):
         # draw the outline
         shapes.color_block(self.event.color, self.box)
 
+        # redraw the last line to make contiguous events stand out a little more
+        # TODO maybe only do this is there is a following event of the same color
+        printat(self.box.x, self.box.end.y, '▁'*self.box.width, f"black_on_{self.event.color}")
+
+        # redraw the far right side to make colliding events stand out a little more
+        # TODO if we trim the bottom of the event, then I like this to be height-1, otherwise, be the full height
+        if self.event.right != 1:
+            shapes.vline(self.box.end.x, self.box.y, self.box.height-1, '▉', f'{self.event.color}_on_black')
+
+
         def print_text(text, line_num):
             attr = f"black_on_{self.event.color}"
             printat(self.box.x, self.box.y + line_num,
@@ -308,6 +321,13 @@ class EventView(object):
             # the text fills the whole thing
             time_line = min(len(lines), self.box.height - 1)
             print_text(time, time_line)
+
+        # TODO better handling for the time.
+        # Here are some events to consider:
+        #   - if the event box is only 1 line tall, consider putting the time
+        #     to the right of the event text, e.g. 'standup  8-9am'
+        #   - if the event collides with another event so the box is squished,
+        #     consider splitting the time string across multiple lines.
 
 
 
@@ -349,8 +369,9 @@ class WeekView():
         self.num_days = num_days
         self.scaleView = HourScaleView(emptyBox, self.hourscale)
         self.days = [ DayView(d.day, emptyBox, d.events, self.hourscale) for d in days ]
-
         self.resize(box)
+
+        self.draw_lines = True
 
 
     def resize(self, box):
@@ -365,9 +386,18 @@ class WeekView():
         for i,d in enumerate(self.days):
             d.resize(Box(Point(6 + i * (day_width), 0), width=day_width, height=day_height))
 
+    def _draw_lines(self):
+        for i in range(self.hourscale.start.hour, self.hourscale.last_time_shown.hour):
+            y = self.hourscale.get_position(time(i))
+            shapes.hline(6, y+2, self.box.width - 6, '▔', "webgrey")
+
     def render(self):
         print(term.clear)
         self.scaleView.render()
+
+        if self.draw_lines:
+            self._draw_lines()
+
         for d in self.days:
             d.render()
 
