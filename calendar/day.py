@@ -137,19 +137,29 @@ class DayView():
     def __init__(self, daytext, box, events, hourscale):
         self.box = box
         self.daytext = daytext
+
+        # the height of the top content, such as the day text and potentially all-day events.
+        self.top_content_height = 2
+
         self.content = DayContentView(self._get_content_box(), events, hourscale)
 
     def render(self):
+        # draw lines
+        shapes.vline(self.box.end.x, self.box.y + self.top_content_height, self.box.height, '│', "webgrey")
+
+        # draw events
         self.content.render()
+
+        # print daytext
         printat(self.box.x, self.box.y, self.daytext.center(self.box.width))
-        shapes.vline(self.box.end.x, self.box.y + 2, self.box.height, '│', "webgrey")
 
     def resize(self, box):
         self.box = box
         self.content.resize(self._get_content_box())
 
     def _get_content_box(self):
-        return self.box.offset(Box(Point(0,2), width=self.box.width-1, height=self.box.height-2))
+        return self.box.offset(Box(Point(0, self.top_content_height), width=self.box.width-1, height=self.box.height-2))
+
 
 class DayContentView(object):
     """
@@ -371,7 +381,7 @@ class WeekView():
         self.days = [ DayView(d.day, emptyBox, d.events, self.hourscale) for d in days ]
         self.resize(box)
 
-        self.draw_lines = True
+        self.draw_hour_lines = True
 
 
     def resize(self, box):
@@ -386,7 +396,7 @@ class WeekView():
         for i,d in enumerate(self.days):
             d.resize(Box(Point(6 + i * (day_width), 0), width=day_width, height=day_height))
 
-    def _draw_lines(self):
+    def _draw_hour_lines(self):
         for i in range(self.hourscale.start.hour, self.hourscale.last_time_shown.hour):
             y = self.hourscale.get_position(time(i))
             shapes.hline(6, y+2, self.box.width - 6, '▔', "webgrey")
@@ -395,8 +405,8 @@ class WeekView():
         print(term.clear)
         self.scaleView.render()
 
-        if self.draw_lines:
-            self._draw_lines()
+        if self.draw_hour_lines:
+            self._draw_hour_lines()
 
         for d in self.days:
             d.render()
