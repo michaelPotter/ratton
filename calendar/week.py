@@ -20,13 +20,54 @@ if __name__ == "__main__":
     h=26
     box = Box(Point(60,10), width=10, height=h)
     border = box.bound_outer()
-    day_events = [
+
+    sun = []
+    mon = [
             Event(time(9, 30), time(9, 45), 'Standup', 'magenta'),
-            Event(time(12, 00), time(13, 00), 'Lunch', 'green'),
-            Event(time(13, 00), time(14, 00), 'Planning', 'blue'),
-            Event(time(12, 30), time(13, 30), 'Collision', 'red'),
+            Event(time(11), time(11, 30), 'busy', 'red'),
+            Event(time(13, 30), time(14), 'busy', 'red'),
+            Event(time(15), time(15, 30), 'busy', 'red'),
+            Event(time(16), time(17), 'appt', 'blue'),
             ]
-    week_events = [ day_events for i in range(7) ]
+    tue = [
+            Event(time(7, 30), time(8), 'busy', 'red'),
+            Event(time(9, 30), time(9, 45), 'Standup', 'magenta'),
+            ]
+    wed = [
+            Event(time(9, 30), time(9, 45), 'Standup', 'magenta'),
+            Event(time(10), time(11), 'busy', 'red'),
+            Event(time(14, 30), time(15), 'busy', 'red'),
+            Event(time(15), time(16), 'busy', 'red'),
+            ]
+    thu = [
+            Event(time(7, 30), time(8), 'busy', 'red'),
+            Event(time(8, 45), time(10, 15), 'busy', 'red'),
+            Event(time(9), time(10), 'busy', 'red'),
+            Event(time(9, 30), time(9, 45), 'Standup', 'magenta'),
+            Event(time(10, 30), time(11, 20), 'busy', 'red'),
+            Event(time(14, 30), time(17, 30), 'busy', 'red'),
+            Event(time(15), time(15, 30), 'busy', 'red'),
+            ]
+    fri = [
+            Event(time(8, 30), time(9), 'busy', 'red'),
+            Event(time(9, 30), time(9, 45), 'Standup', 'magenta'),
+            Event(time(10, 35), time(11, 25), 'busy', 'red'),
+            Event(time(11, 40), time(12, 40), 'busy', 'red'),
+            Event(time(13, 40), time(14, 30), 'busy', 'red'),
+            Event(time(14, 45), time(15, 35), 'busy', 'red'),
+            Event(time(14, 45), time(15, 35), 'busy', 'red'),
+            Event(time(15, 50), time(17, 20), 'busy', 'red'),
+            ]
+    sat = []
+    week_events = [
+         Day("Sun 01", sun),
+         Day("Mon 02", mon),
+         Day("Tue 03", tue),
+         Day("Wed 04", wed),
+         Day("Thu 05", thu),
+         Day("Fri 06", fri),
+         Day("Sat 07", sat),
+         ]
 
     # scale_box = Box(Point(53, 10), width=5, height=h)
     # scale = HourScale(box.height, 3, time(9))
@@ -45,16 +86,6 @@ if __name__ == "__main__":
     weekView = WeekView(getFullBox(), week_events)
 
     with term.fullscreen(), term.cbreak(), term.hidden_cursor():
-        # render
-        # def render():
-        #     print(term.clear())
-        #     shapes.box(border)
-        #     d.render()
-        #     hourView.render()
-            # print("lph: " , scale.lines_per_hour)
-            # print("last time: " , scale.last_time_shown)
-
-        # signal.signal(signal.SIGWINCH, lambda sig, action: render())
         signal.signal(signal.SIGWINCH, onResize)
 
         while True:
@@ -65,12 +96,12 @@ if __name__ == "__main__":
             elif key == 'k':
                 weekView.scroll_up()
             elif key == '-':
-                scale.zoom_out()
+                weekView.zoom_out()
             elif key == '+':
-                scale.zoom_in()
-            elif key == '>':
-                d.box.width += 2
-            elif key == '<':
-                d.box.width -= 2
+                weekView.zoom_in()
+            # elif key == '>':
+            #     d.box.width += 2
+            # elif key == '<':
+            #     d.box.width -= 2
             elif key == 'q':
                 exit()

@@ -127,11 +127,33 @@ class HourScaleView(object):
                         b(t.strftime("%I:%M")))
 
 
+class DayView():
+    """
+    This is shows a day. Includes the day text at the top and a one column
+    buffer on the right.
+    """
+    def __init__(self, daytext, box, events, hourscale):
+        self.box = box
+        self.daytext = daytext
+        self.content = DayContentView(self._get_content_box(), events, hourscale)
 
-class DayView(object):
-    """docstring for Day"""
+    def render(self):
+        self.content.render()
+        printat(self.box.x, self.box.y, self.daytext.center(self.box.width))
+
+    def resize(self, box):
+        self.box = box
+        self.content.resize(self._get_content_box())
+
+    def _get_content_box(self):
+        return self.box.offset(Box(Point(0,2), width=self.box.width-1, height=self.box.height-2))
+
+class DayContentView(object):
+    """
+    This is the content portion of the day view. This is just the block of
+    events, no border, no title.
+    """
     def __init__(self, box, events, hourscale):
-        super(DayView, self).__init__()
         self.box = box
         self.events = events
         self.hourscale = hourscale
@@ -143,9 +165,12 @@ class DayView(object):
             ev = EventView(e, self.box.offset(self._get_event_box(e)))
             ev.render()
 
+    def resize(self, box):
+        self.box = box
+
     def _get_event_box(self, event):
         """
-        Returns the box an event should take up within the DayView box
+        Returns the box an event should take up within the DayContentView box
         The event should have the left and right props set layout_events
         """
         last_line = self.box.height - 1
@@ -279,7 +304,10 @@ class EventView(object):
             for i in range(self.box.height):
                 if i < len(lines):
                     print_text(lines[i], i)
-            print_text(time, self.box.height - 1)
+            # print the time either right below the text, or at the bottom if
+            # the text fills the whole thing
+            time_line = min(len(lines), self.box.height - 1)
+            print_text(time, time_line)
 
 
 
@@ -308,19 +336,19 @@ class WeekView():
     week - could show any number of days
     """
 
-    def __init__(self, box, events, num_days=7):
+    def __init__(self, box, days, num_days=7):
         """
         Constructor
 
         :arg box Box: the area to render in
-        :arg events list[list[Event]]: A list of list of events. Each list of events represents a day
+        :arg days list[Day]: A list of Days
         :arg num_days int: the number of days to show
         """
         emptyBox = Box(Point(0,0),Point(0,0))
         self.hourscale = HourScale(box.height, 4, time(9))
         self.num_days = num_days
         self.scaleView = HourScaleView(emptyBox, self.hourscale)
-        self.days = [ DayView(emptyBox, e, self.hourscale) for e in events ]
+        self.days = [ DayView(d.day, emptyBox, d.events, self.hourscale) for d in days ]
 
         self.resize(box)
 
@@ -332,10 +360,10 @@ class WeekView():
         self.hourscale.height = scaleHeight
         self.scaleView.box = Box(Point(0, 2), width=6, height=scaleHeight)
 
-        day_width = ((self.box.width - 6) // self.num_days) - 1
+        day_width = (self.box.width - 6) // self.num_days
         day_height = self.box.height - 2
         for i,d in enumerate(self.days):
-            d.box = Box(Point(6 + i * (day_width+1), 2), width=day_width, height=day_height)
+            d.resize(Box(Point(6 + i * (day_width), 0), width=day_width, height=day_height))
 
     def render(self):
         print(term.clear)
@@ -356,6 +384,10 @@ class WeekView():
         self.hourscale.scroll_down()
 
 
+class Day():
+    def __init__(self, day, events):
+        self.day = day
+        self.events = events
 
 class Event(object):
     def __init__(self, start, end, text, color):
@@ -384,7 +416,7 @@ if __name__ == "__main__":
     scale = HourScale(box.height, 3, time(9))
     hourView = HourScaleView(scale_box, scale)
 
-    d = DayView(box, events, scale)
+    d = DayContentView(box, events, scale)
 
 
     with term.fullscreen(), term.cbreak(), term.hidden_cursor():
