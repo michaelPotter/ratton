@@ -397,9 +397,10 @@ class WeekView():
             d.resize(Box(Point(6 + i * (day_width), 0), width=day_width, height=day_height))
 
     def _draw_hour_lines(self):
+        """ draws the horizontal hour lines that cross the screen """
         for i in range(self.hourscale.start.hour, self.hourscale.last_time_shown.hour):
             y = self.hourscale.get_position(time(i))
-            shapes.hline(6, y+2, self.box.width - 6, '▔', "webgrey")
+            shapes.hline(5, y+2, self.days[-1].box.end.x - 5, '▔', "webgrey")
 
     def render(self):
         print(term.clear)
