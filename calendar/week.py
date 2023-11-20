@@ -16,11 +16,7 @@ import signal
 
 from day import *
 
-if __name__ == "__main__":
-    h=26
-    box = Box(Point(60,10), width=10, height=h)
-    border = box.bound_outer()
-
+def get_test_data():
     sun = []
     mon = [
             Event(time(9, 30), time(9, 45), 'Standup', 'magenta'),
@@ -68,6 +64,17 @@ if __name__ == "__main__":
          Day("Fri 06", fri),
          Day("Sat 07", sat),
          ]
+
+    return week_events
+
+
+if __name__ == "__main__":
+    h=26
+    box = Box(Point(60,10), width=10, height=h)
+    border = box.bound_outer()
+
+    week_events = get_test_data()
+
 
     # scale_box = Box(Point(53, 10), width=5, height=h)
     # scale = HourScale(box.height, 3, time(9))

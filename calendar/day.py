@@ -31,7 +31,7 @@ class HourScale(object):
 
     def get_position(self, time):
         """
-        Returns the
+        Returns the position on the scale where the given time would fall
         """
         # TODO handle hours that are too big? or just let clients deal w/it
         if time < self.start:
